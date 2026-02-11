@@ -3,17 +3,19 @@ import os
 
 
 def move_file(command: str) -> None:
-    command = command.split()
-    if command[0] == "mv" and len(command) == 3:
-        print(command)
-        path = command[2].split("/")
+    mv_token = command.split()
+    if len(mv_token) == 3 and mv_token[0] == "mv":
+        path = mv_token[2].split("/")
         path_start = ""
-        for part_patch in path[:-1]:
+        print(path)
+        for part in path[:-1]:
             try:
-                os.mkdir(path_start + part_patch)
+                os.mkdir(os.path.join(path_start, part))
             except FileExistsError:
                 pass
             finally:
-                path_start += part_patch + "/"
-        shutil.copy2(command[1], command[2])
-        os.remove(command[1])
+                path_start = os.path.join(path_start, part)
+                print(path_start)
+        path_start = os.path.join(path_start, path[-1])
+        shutil.copy2(mv_token[1], path_start)
+        os.remove(mv_token[1])
